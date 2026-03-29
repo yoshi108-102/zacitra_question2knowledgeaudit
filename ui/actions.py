@@ -41,24 +41,24 @@ def on_generate(stumbling_point: str, state: AppState) -> AppState:
 
 
 def on_confirm(
-    edited: dict[str, str],
-    use_flags: dict[str, bool],
+    audit_texts: dict[str, str],
+    selected: set[str],
     state: AppState,
 ) -> AppState:
     """
     「確定する」ボタン押下時の処理。
 
     Args:
-        edited:     {"cue": "編集後テキスト", "gap": ..., "anomaly": ...}
-        use_flags:  {"cue": True, "gap": False, "anomaly": True}
+        audit_texts: 編集後の各問いテキスト {"cue": ..., "gap": ..., "anomaly": ...}
+        selected:    使用する問いのキーのSet  {"cue", "anomaly"}
 
-    - use_flags が True のもののみ confirmed に追加する
+    - selected に含まれるキーの問いのみ confirmed に追加する
     - 何も選択されていない場合は警告ログ + errorをセット
     """
     confirmed = [
         text
-        for key, text in edited.items()
-        if use_flags.get(key, False) and text.strip()
+        for key, text in audit_texts.items()
+        if key in selected and text.strip()
     ]
 
     if not confirmed:
