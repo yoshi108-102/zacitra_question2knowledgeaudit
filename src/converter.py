@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from src.models import KnowledgeAuditSet
-from src.prompt import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
+from src.prompt import PROMPT
 from src.logger import logger
 
 load_dotenv()
@@ -34,8 +34,8 @@ def generate_knowledge_audit(stumbling_point: str) -> KnowledgeAuditSet:
         response = client.chat.completions.create(
             model=model,
             messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": USER_PROMPT_TEMPLATE.format(
+                {"role": "system", "content": PROMPT["system"]},
+                {"role": "user", "content": PROMPT["user_template"].format(
                     stumbling_point=stumbling_point
                 )},
             ],
