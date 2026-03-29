@@ -12,12 +12,13 @@ load_dotenv()
 
 DEFAULT_CONVERT_MODEL = "gpt-5-nano"
 
-def generate_knowledge_audit(stumbling_point: str) -> KnowledgeAuditSet:
+def generate_knowledge_audit(stumbling_point: str, why_chain: str) -> KnowledgeAuditSet:
     """
     躓きの核心テキストを受け取り、3形式の問いを返す純粋関数。
 
     Args:
         stumbling_point: 躓きの核心（一文、日本語）
+        why_chain: なぜなぜチェーン（参考情報）
 
     Returns:
         KnowledgeAuditSet: {cue, gap, anomaly}
@@ -36,7 +37,8 @@ def generate_knowledge_audit(stumbling_point: str) -> KnowledgeAuditSet:
             messages=[
                 {"role": "system", "content": PROMPT["system"]},
                 {"role": "user", "content": PROMPT["user_template"].format(
-                    stumbling_point=stumbling_point
+                    stumbling_point=stumbling_point,
+                    why_chain=why_chain
                 )},
             ],
             response_format={"type": "json_object"},

@@ -3,7 +3,7 @@ from ui.state import AppState
 from src.converter import generate_knowledge_audit
 
 
-def on_generate(stumbling_point: str, state: AppState) -> AppState:
+def on_generate(stumbling_point: str, why_chain: str, state: AppState) -> AppState:
     """
     「問いを生成する」ボタン押下時の処理。
 
@@ -15,6 +15,7 @@ def on_generate(stumbling_point: str, state: AppState) -> AppState:
         logger.warning("on_generate: empty input")
         return AppState(
             stumbling_point=state.stumbling_point,
+            why_chain=state.why_chain,
             generated=state.generated,
             confirmed=state.confirmed,
             error="躓きの核心を入力してください。",
@@ -22,10 +23,11 @@ def on_generate(stumbling_point: str, state: AppState) -> AppState:
 
     logger.info("on_generate: start | input=%r", stumbling_point)
     try:
-        knowledge_audit = generate_knowledge_audit(stumbling_point)
+        knowledge_audit = generate_knowledge_audit(stumbling_point, why_chain)
         logger.info("on_generate: done")
         return AppState(
             stumbling_point=stumbling_point,
+            why_chain=why_chain,
             generated=knowledge_audit,
             confirmed=[],
             error=None,
@@ -34,6 +36,7 @@ def on_generate(stumbling_point: str, state: AppState) -> AppState:
         logger.error("on_generate: failed | error=%s", e, exc_info=True)
         return AppState(
             stumbling_point=stumbling_point,
+            why_chain=why_chain,
             generated=state.generated,
             confirmed=state.confirmed,
             error=f"生成に失敗しました：{e}",
@@ -65,6 +68,7 @@ def on_confirm(
         logger.warning("on_confirm: no question selected")
         return AppState(
             stumbling_point=state.stumbling_point,
+            why_chain=state.why_chain,
             generated=state.generated,
             confirmed=state.confirmed,
             error="少なくとも1つの問いを選択してください。",
@@ -73,6 +77,7 @@ def on_confirm(
     logger.info("on_confirm: confirmed %d question(s)", len(confirmed))
     return AppState(
         stumbling_point=state.stumbling_point,
+        why_chain=state.why_chain,
         generated=state.generated,
         confirmed=confirmed,
         error=None,

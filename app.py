@@ -51,9 +51,16 @@ stumbling_point = st.text_area(
     height=100,
 )
 
+why_chain = st.text_area(
+    label="なぜなぜチェーン（参考）",
+    value=state.why_chain,
+    placeholder="例：\nQ1（起点） そのとき何をしようとしていましたか？\n↳ 回答：押し量が適切でないような気がして何度も踏んでいた\n...",
+    height=200,
+)
+
 if st.button("問いを生成する", type="primary"):
     with st.spinner("生成中..."):
-        st.session_state.app_state = on_generate(stumbling_point, state)
+        st.session_state.app_state = on_generate(stumbling_point, why_chain, state)
     st.rerun()
 
 if state.error:
